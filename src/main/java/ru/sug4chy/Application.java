@@ -3,10 +3,9 @@ package ru.sug4chy;
 public class Application {
     public static void main(String[] args) {
 
-        System.out.println("Hello and welcome!");
-
-        for (int i = 1; i <= 5; i++) {
-            System.out.println("i = " + i);
-        }
+        // Будут 2 основные сущности:
+        // 1 - GitHubApiClient, будет внутри себя подготавливать параметры, отправлять запросы, получать ответы и десериализовывать их
+        // 2 - UserActivityAnalyzer, в который будет передаваться активность пользователя, полученная от API-клиента,
+        // а тут уже она будет печататься в терминал красиво
     }
 }
