@@ -1,6 +1,9 @@
-package ru.sug4chy.model.enums;
+package ru.sug4chy.model.enums
 
-public enum GitHubEventType {
+import kotlinx.serialization.Serializable
+
+@Serializable
+enum class GitHubEventType {
     COMMIT_COMMENT_EVENT,
     CREATE_EVENT,
     DELETE_EVENT,
@@ -19,20 +22,22 @@ public enum GitHubEventType {
     SPONSORSHIP_EVENT,
     WATCH_EVENT;
 
-    public static GitHubEventType fromPascalCaseString(String pascalCaseStringType) {
-        char[] chars = pascalCaseStringType.toCharArray();
-        StringBuilder sb = new StringBuilder(Character.toString(chars[0]));
+    companion object {
 
-        for (int i = 1; i < chars.length; i++) {
+        fun fromPascalCaseString(pascalCaseStringType: String): GitHubEventType {
+            val chars = pascalCaseStringType.toCharArray()
+            val sb = StringBuilder(chars[0].toString())
 
-            if (Character.isUpperCase(chars[i])) {
-                sb.append('_').append(chars[i]);
-                continue;
+            for (i in 1 until chars.size) {
+                if (chars[i].isUpperCase()) {
+                    sb.append('_').append(chars[i])
+                    continue
+                }
+
+                sb.append(chars[i].uppercaseChar())
             }
 
-            sb.append(Character.toUpperCase(chars[i]));
+            return valueOf(sb.toString())
         }
-
-        return GitHubEventType.valueOf(sb.toString());
     }
 }
