@@ -3,7 +3,6 @@ package ru.sug4chy.gson.typeadapters;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import org.jetbrains.annotations.NotNull;
 import ru.sug4chy.model.enums.GitHubEventType;
 
 import java.io.IOException;
@@ -15,7 +14,7 @@ public final class GitHubEventTypeTypeAdapter extends TypeAdapter<GitHubEventTyp
     }
 
     @Override
-    public GitHubEventType read(@NotNull JsonReader in) throws IOException {
+    public GitHubEventType read(JsonReader in) throws IOException {
         return GitHubEventType.fromPascalCaseString(in.nextString());
     }
 }

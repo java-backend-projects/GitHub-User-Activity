@@ -1,7 +1,5 @@
 package ru.sug4chy.model.enums;
 
-import org.jetbrains.annotations.NotNull;
-
 public enum GitHubEventType {
     COMMIT_COMMENT_EVENT,
     CREATE_EVENT,
@@ -21,7 +19,7 @@ public enum GitHubEventType {
     SPONSORSHIP_EVENT,
     WATCH_EVENT;
 
-    public static GitHubEventType fromPascalCaseString(@NotNull String pascalCaseStringType) {
+    public static GitHubEventType fromPascalCaseString(String pascalCaseStringType) {
         char[] chars = pascalCaseStringType.toCharArray();
         StringBuilder sb = new StringBuilder(Character.toString(chars[0]));
 
