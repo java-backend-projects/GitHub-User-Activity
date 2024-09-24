@@ -1,8 +1,5 @@
 package ru.sug4chy.model.enums
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 enum class GitHubEventType {
     COMMIT_COMMENT_EVENT,
     CREATE_EVENT,

@@ -1,10 +1,8 @@
 package ru.sug4chy.model
 
-import kotlinx.serialization.Serializable
 import ru.sug4chy.model.GitHubPayload.*
 import ru.sug4chy.model.enums.GitHubEventType
 
-@Serializable
 sealed class GitHubEvent<out TPayload : GitHubPayload>(
     val type: GitHubEventType,
     val repo: GitHubRepo,

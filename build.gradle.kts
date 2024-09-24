@@ -1,10 +1,9 @@
-val ktorVersion = "2.3.12"
-val logbackVersion = "1.5.6"
+val ktor_version: String by project
+val logback_version: String by project
 
 plugins {
     application
     kotlin("jvm") version "2.0.20"
-    kotlin("plugin.serialization") version "2.0.20"
 }
 
 group = "ru.sug4chy"
@@ -14,14 +13,19 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-cio-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("com.google.code.gson:gson:2.11.0")
 
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    // Ktor.Client
+    implementation("io.ktor:ktor-client-core:$ktor_version")
+    implementation("io.ktor:ktor-client-cio:$ktor_version")
+
+    // Ktor.Client serialization
+    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
+    implementation("io.ktor:ktor-serialization-gson:$ktor_version")
+
+    // Ktor.Client logging
+    implementation("ch.qos.logback:logback-classic:$logback_version")
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")

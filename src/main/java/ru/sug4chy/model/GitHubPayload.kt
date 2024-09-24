@@ -1,19 +1,17 @@
 package ru.sug4chy.model
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 
-@Serializable
 sealed class GitHubPayload {
     data class CommitCommentGitHubPayload(val action: String = "created") : GitHubPayload()
 
     data class CreateGitHubPayload(
-        @SerialName("ref_type")
+        @SerializedName("ref_type")
         val refType: String,
     ) : GitHubPayload()
 
     data class DeleteGitHubPayload(
-        @SerialName("ref_type")
+        @SerializedName("ref_type")
         val refType: String,
     ) : GitHubPayload()
 

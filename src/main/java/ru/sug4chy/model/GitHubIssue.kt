@@ -1,9 +1,9 @@
 package ru.sug4chy.model
 
-import kotlinx.serialization.SerialName
+import com.google.gson.annotations.SerializedName
 
 class GitHubIssue(
-    @SerialName("pull_request")
+    @SerializedName("pull_request")
     private val pullRequest: Any?
 ) {
     val isIssue: Boolean
