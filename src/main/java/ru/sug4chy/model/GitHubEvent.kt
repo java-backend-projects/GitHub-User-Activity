@@ -1,104 +1,161 @@
 package ru.sug4chy.model
 
+import com.google.gson.annotations.SerializedName
+import ru.sug4chy.formatter.GitHubEventFormatter
 import ru.sug4chy.model.GitHubPayload.*
 import ru.sug4chy.model.enums.GitHubEventType
+import java.time.LocalDateTime
 
 sealed class GitHubEvent<out TPayload : GitHubPayload>(
     val type: GitHubEventType,
-    val repo: GitHubRepo,
-    val payload: TPayload
+    private val actor: GitHubActor,
+    private val repo: GitHubRepo,
+    val payload: TPayload,
+
+    @SerializedName("created_at")
+    val createdAt: LocalDateTime
 ) {
 
+    val repoFullName: String
+        get() = "${actor.displayLogin}/${repo.name}"
+
     class CommitCommentGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
         payload: CommitCommentGitHubPayload,
-    ) : GitHubEvent<CommitCommentGitHubPayload>(GitHubEventType.COMMIT_COMMENT_EVENT, repo, payload)
+        createdAt: LocalDateTime,
+    ) : GitHubEvent<CommitCommentGitHubPayload>(GitHubEventType.COMMIT_COMMENT_EVENT, actor, repo, payload, createdAt)
 
     class CreateGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
-        payload: CreateGitHubPayload
-    ) : GitHubEvent<CreateGitHubPayload>(GitHubEventType.CREATE_EVENT, repo, payload)
+        payload: CreateGitHubPayload,
+        createdAt: LocalDateTime,
+    ) : GitHubEvent<CreateGitHubPayload>(GitHubEventType.CREATE_EVENT, actor, repo, payload, createdAt)
 
     class DeleteGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
-        payload: DeleteGitHubPayload
-    ) : GitHubEvent<DeleteGitHubPayload>(GitHubEventType.DELETE_EVENT, repo, payload)
+        payload: DeleteGitHubPayload,
+        createdAt: LocalDateTime,
+    ) : GitHubEvent<DeleteGitHubPayload>(GitHubEventType.DELETE_EVENT, actor, repo, payload, createdAt)
 
     class ForkGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
         payload: ForkGitHubPayload,
-    ) : GitHubEvent<ForkGitHubPayload>(GitHubEventType.FORK_EVENT, repo, payload)
+        createdAt: LocalDateTime,
+    ) : GitHubEvent<ForkGitHubPayload>(GitHubEventType.FORK_EVENT, actor, repo, payload, createdAt)
 
     class GollumGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
         payload: GollumGitHubPayload,
-    ) : GitHubEvent<GollumGitHubPayload>(GitHubEventType.GOLLUM_EVENT, repo, payload)
+        createdAt: LocalDateTime,
+    ) : GitHubEvent<GollumGitHubPayload>(GitHubEventType.GOLLUM_EVENT, actor, repo, payload, createdAt)
 
     class IssueCommentGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
         payload: IssueCommentGitHubPayload,
-    ) : GitHubEvent<IssueCommentGitHubPayload>(GitHubEventType.ISSUE_COMMENT_EVENT, repo, payload)
+        createdAt: LocalDateTime,
+    ) : GitHubEvent<IssueCommentGitHubPayload>(GitHubEventType.ISSUE_COMMENT_EVENT, actor, repo, payload, createdAt)
 
     class IssuesGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
         payload: IssuesGitHubPayload,
-    ) : GitHubEvent<IssuesGitHubPayload>(GitHubEventType.ISSUES_EVENT, repo, payload)
+        createdAt: LocalDateTime,
+    ) : GitHubEvent<IssuesGitHubPayload>(GitHubEventType.ISSUES_EVENT, actor, repo, payload, createdAt)
 
     class MemberGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
         payload: MemberGitHubPayload,
-    ) : GitHubEvent<MemberGitHubPayload>(GitHubEventType.MEMBER_EVENT, repo, payload)
+        createdAt: LocalDateTime,
+    ) : GitHubEvent<MemberGitHubPayload>(GitHubEventType.MEMBER_EVENT, actor, repo, payload, createdAt)
 
     class PublicGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
         payload: PublicGitHubPayload,
-    ) : GitHubEvent<PublicGitHubPayload>(GitHubEventType.PUBLIC_EVENT, repo, payload)
+        createdAt: LocalDateTime,
+    ) : GitHubEvent<PublicGitHubPayload>(GitHubEventType.PUBLIC_EVENT, actor, repo, payload, createdAt)
 
     class PullRequestGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
         payload: PullRequestGitHubPayload,
-    ) : GitHubEvent<PullRequestGitHubPayload>(GitHubEventType.PULL_REQUEST_EVENT, repo, payload)
+        createdAt: LocalDateTime,
+    ) : GitHubEvent<PullRequestGitHubPayload>(GitHubEventType.PULL_REQUEST_EVENT, actor, repo, payload, createdAt)
 
     class PullRequestReviewGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
         payload: PullRequestReviewGitHubPayload,
-    ) : GitHubEvent<PullRequestReviewGitHubPayload>(GitHubEventType.PULL_REQUEST_REVIEW_EVENT, repo, payload)
+        createdAt: LocalDateTime,
+    ) : GitHubEvent<PullRequestReviewGitHubPayload>(
+        GitHubEventType.PULL_REQUEST_REVIEW_EVENT,
+        actor,
+        repo,
+        payload,
+        createdAt
+    )
 
     class PullRequestReviewCommentGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
         payload: PullRequestReviewCommentGitHubPayload,
+        createdAt: LocalDateTime,
     ) : GitHubEvent<PullRequestReviewCommentGitHubPayload>(
         GitHubEventType.PULL_REQUEST_REVIEW_COMMENT_EVENT,
+        actor,
         repo,
-        payload
+        payload,
+        createdAt
     )
 
     class PullRequestReviewThreadGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
         payload: PullRequestReviewThreadGitHubPayload,
+        createdAt: LocalDateTime,
     ) : GitHubEvent<PullRequestReviewThreadGitHubPayload>(
         GitHubEventType.PULL_REQUEST_REVIEW_THREAD_EVENT,
+        actor,
         repo,
-        payload
+        payload,
+        createdAt
     )
 
     class PushGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
         payload: PushGitHubPayload,
-    ) : GitHubEvent<PushGitHubPayload>(GitHubEventType.PUSH_EVENT, repo, payload)
+        createdAt: LocalDateTime,
+    ) : GitHubEvent<PushGitHubPayload>(GitHubEventType.PUSH_EVENT, actor, repo, payload, createdAt)
 
     class ReleaseGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
         payload: ReleaseGitHubPayload,
-    ) : GitHubEvent<ReleaseGitHubPayload>(GitHubEventType.RELEASE_EVENT, repo, payload)
+        createdAt: LocalDateTime,
+    ) : GitHubEvent<ReleaseGitHubPayload>(GitHubEventType.RELEASE_EVENT, actor, repo, payload, createdAt)
 
     class SponsorshipGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
         payload: SponsorshipGitHubPayload,
-    ) : GitHubEvent<SponsorshipGitHubPayload>(GitHubEventType.SPONSORSHIP_EVENT, repo, payload)
+        createdAt: LocalDateTime,
+    ) : GitHubEvent<SponsorshipGitHubPayload>(GitHubEventType.SPONSORSHIP_EVENT, actor, repo, payload, createdAt)
 
     class WatchGitHubEvent(
+        actor: GitHubActor,
         repo: GitHubRepo,
         payload: WatchGitHubPayload,
-    ) : GitHubEvent<WatchGitHubPayload>(GitHubEventType.WATCH_EVENT, repo, payload)
+        createdAt: LocalDateTime,
+    ) : GitHubEvent<WatchGitHubPayload>(GitHubEventType.WATCH_EVENT, actor, repo, payload, createdAt)
+
+    fun format(formatter: GitHubEventFormatter): String =
+        formatter.format(this)
 }

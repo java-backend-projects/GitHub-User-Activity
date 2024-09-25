@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
+import ru.sug4chy.model.GitHubActor
 import ru.sug4chy.model.GitHubEvent
 import ru.sug4chy.model.GitHubEvent.*
 import ru.sug4chy.model.GitHubPayload
@@ -11,9 +12,11 @@ import ru.sug4chy.model.GitHubPayload.*
 import ru.sug4chy.model.GitHubRepo
 import ru.sug4chy.model.enums.GitHubEventType
 import java.io.IOException
+import java.time.LocalDateTime
 
 class GitHubEventTypeAdapter(
-    private val payloadAdapter: GitHubPayloadTypeAdapter = GitHubPayloadTypeAdapter()
+    private val payloadAdapter: GitHubPayloadTypeAdapter = GitHubPayloadTypeAdapter(),
+    private val localDateTimeTypeAdapter: LocalDateTimeTypeAdapter = LocalDateTimeTypeAdapter()
 ) : TypeAdapter<GitHubEvent<*>>() {
 
     @Throws(UnsupportedOperationException::class)
@@ -25,17 +28,22 @@ class GitHubEventTypeAdapter(
         `in`.beginObject()
 
         lateinit var type: GitHubEventType
+        lateinit var actor: GitHubActor
         lateinit var repo: GitHubRepo
         lateinit var payload: GitHubPayload
+        lateinit var createdAt: LocalDateTime
 
         while (`in`.hasNext()) {
             when (`in`.nextName()) {
                 "type" -> type = GitHubEventType.fromPascalCaseString(`in`.nextString())
+                "actor" -> actor = Gson().fromJson(`in`, GitHubActor::class.java)
                 "repo" -> repo = Gson().fromJson(`in`, GitHubRepo::class.java)
                 "payload" -> payloadAdapter.apply {
                     targetEventType = type
                     payload = read(`in`)
                 }
+
+                "created_at" -> createdAt = localDateTimeTypeAdapter.read(`in`)
                 else -> `in`.skipValue()
             }
         }
@@ -44,34 +52,57 @@ class GitHubEventTypeAdapter(
 
         return when (type) {
             GitHubEventType.COMMIT_COMMENT_EVENT -> CommitCommentGitHubEvent(
+                actor,
                 repo,
-                payload as CommitCommentGitHubPayload
+                payload as CommitCommentGitHubPayload,
+                createdAt
             )
-            GitHubEventType.CREATE_EVENT -> CreateGitHubEvent(repo, payload as CreateGitHubPayload)
-            GitHubEventType.DELETE_EVENT -> DeleteGitHubEvent(repo, payload as DeleteGitHubPayload)
-            GitHubEventType.FORK_EVENT -> ForkGitHubEvent(repo, payload as ForkGitHubPayload)
-            GitHubEventType.GOLLUM_EVENT -> GollumGitHubEvent(repo, payload as GollumGitHubPayload)
-            GitHubEventType.ISSUE_COMMENT_EVENT -> IssueCommentGitHubEvent(repo, payload as IssueCommentGitHubPayload)
-            GitHubEventType.ISSUES_EVENT -> IssuesGitHubEvent(repo, payload as IssuesGitHubPayload)
-            GitHubEventType.MEMBER_EVENT -> MemberGitHubEvent(repo, payload as MemberGitHubPayload)
-            GitHubEventType.PUBLIC_EVENT -> PublicGitHubEvent(repo, payload as PublicGitHubPayload)
-            GitHubEventType.PULL_REQUEST_EVENT -> PullRequestGitHubEvent(repo, payload as PullRequestGitHubPayload)
-            GitHubEventType.PULL_REQUEST_REVIEW_EVENT -> PullRequestReviewGitHubEvent(
+            GitHubEventType.CREATE_EVENT -> CreateGitHubEvent(actor, repo, payload as CreateGitHubPayload, createdAt)
+            GitHubEventType.DELETE_EVENT -> DeleteGitHubEvent(actor, repo, payload as DeleteGitHubPayload, createdAt)
+            GitHubEventType.FORK_EVENT -> ForkGitHubEvent(actor, repo, payload as ForkGitHubPayload, createdAt)
+            GitHubEventType.GOLLUM_EVENT -> GollumGitHubEvent(actor, repo, payload as GollumGitHubPayload, createdAt)
+            GitHubEventType.ISSUE_COMMENT_EVENT -> IssueCommentGitHubEvent(
+                actor,
                 repo,
-                payload as PullRequestReviewGitHubPayload
+                payload as IssueCommentGitHubPayload,
+                createdAt
+            )
+            GitHubEventType.ISSUES_EVENT -> IssuesGitHubEvent(actor, repo, payload as IssuesGitHubPayload, createdAt)
+            GitHubEventType.MEMBER_EVENT -> MemberGitHubEvent(actor, repo, payload as MemberGitHubPayload, createdAt)
+            GitHubEventType.PUBLIC_EVENT -> PublicGitHubEvent(actor, repo, payload as PublicGitHubPayload, createdAt)
+            GitHubEventType.PULL_REQUEST_EVENT -> PullRequestGitHubEvent(
+                actor,
+                repo,
+                payload as PullRequestGitHubPayload,
+                createdAt
+            )
+            GitHubEventType.PULL_REQUEST_REVIEW_EVENT -> PullRequestReviewGitHubEvent(
+                actor,
+                repo,
+                payload as PullRequestReviewGitHubPayload,
+                createdAt
             )
             GitHubEventType.PULL_REQUEST_REVIEW_COMMENT_EVENT -> PullRequestReviewCommentGitHubEvent(
+                actor,
                 repo,
-                payload as PullRequestReviewCommentGitHubPayload
+                payload as PullRequestReviewCommentGitHubPayload,
+                createdAt
             )
             GitHubEventType.PULL_REQUEST_REVIEW_THREAD_EVENT -> PullRequestReviewThreadGitHubEvent(
+                actor,
                 repo,
-                payload as PullRequestReviewThreadGitHubPayload
+                payload as PullRequestReviewThreadGitHubPayload,
+                createdAt
             )
-            GitHubEventType.PUSH_EVENT -> PushGitHubEvent(repo, payload as PushGitHubPayload)
-            GitHubEventType.RELEASE_EVENT -> ReleaseGitHubEvent(repo, payload as ReleaseGitHubPayload)
-            GitHubEventType.SPONSORSHIP_EVENT -> SponsorshipGitHubEvent(repo, payload as SponsorshipGitHubPayload)
-            GitHubEventType.WATCH_EVENT -> WatchGitHubEvent(repo, payload as WatchGitHubPayload)
+            GitHubEventType.PUSH_EVENT -> PushGitHubEvent(actor, repo, payload as PushGitHubPayload, createdAt)
+            GitHubEventType.RELEASE_EVENT -> ReleaseGitHubEvent(actor, repo, payload as ReleaseGitHubPayload, createdAt)
+            GitHubEventType.SPONSORSHIP_EVENT -> SponsorshipGitHubEvent(
+                actor,
+                repo,
+                payload as SponsorshipGitHubPayload,
+                createdAt
+            )
+            GitHubEventType.WATCH_EVENT -> WatchGitHubEvent(actor, repo, payload as WatchGitHubPayload, createdAt)
         }
     }
 }

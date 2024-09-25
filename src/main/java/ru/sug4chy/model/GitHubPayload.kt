@@ -15,7 +15,7 @@ sealed class GitHubPayload {
         val refType: String,
     ) : GitHubPayload()
 
-    data object ForkGitHubPayload : GitHubPayload()
+    data class ForkGitHubPayload(val forkee: GitHubRepository) : GitHubPayload()
 
     class GollumGitHubPayload(
         val pages: Array<GitHubWikiPage>
