@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter
 
 class GitHubEventFormatter {
 
-    fun format(event: GitHubEvent<*>): String = when (event.type) {
+    internal fun format(event: GitHubEvent<*>): String = when (event.type) {
         GitHubEventType.COMMIT_COMMENT_EVENT -> formatCommitComment(event as CommitCommentGitHubEvent)
         GitHubEventType.CREATE_EVENT -> formatCreate(event as CreateGitHubEvent)
         GitHubEventType.DELETE_EVENT -> formatDelete(event as DeleteGitHubEvent)
