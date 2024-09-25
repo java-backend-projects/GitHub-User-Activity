@@ -5,7 +5,6 @@ import ru.sug4chy.model.GitHubEvent
 interface GitHubApiClient {
 
     suspend fun listEventsForAuthenticatedUser(
-        username: String,
-        eventsCount: Int
+        username: String
     ): Array<GitHubEvent<*>>
 }

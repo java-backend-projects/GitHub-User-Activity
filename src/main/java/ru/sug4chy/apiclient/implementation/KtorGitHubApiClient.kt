@@ -18,16 +18,11 @@ class KtorGitHubApiClient : GitHubApiClient {
     private val gitHubEventsArrayTypeAdapter = GitHubEventsArrayTypeAdapter()
     private val gitHubEventsArrayTypeToken: Type = object : TypeToken<Array<GitHubEvent<*>>>() {}.type
 
-    override suspend fun listEventsForAuthenticatedUser(username: String, eventsCount: Int): Array<GitHubEvent<*>> =
+    override suspend fun listEventsForAuthenticatedUser(username: String): Array<GitHubEvent<*>> =
         httpClient().use { client ->
             val httpResponse = client.get("https://api.github.com/users/$username/events") {
                 headers {
                     append(HttpHeaders.Accept, "application/vnd.github+json")
-                }
-                url {
-                    if (eventsCount > 0 && eventsCount != 30) {
-                        parameter("per_page", eventsCount)
-                    }
                 }
             }
 

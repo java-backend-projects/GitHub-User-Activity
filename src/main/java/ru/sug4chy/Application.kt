@@ -6,7 +6,7 @@ import ru.sug4chy.formatter.GitHubEventFormatter
 
 suspend fun main(args: Array<String>) {
     if (args.isEmpty()) {
-        handleHelpCommand()
+        handleInvalidInput()
         return
     }
 
@@ -15,12 +15,10 @@ suspend fun main(args: Array<String>) {
         return
     }
 
-    val perPageQueryParameter = if (args.contains("--per-page")) args[args.indexOf("--per_page") + 1].toInt() else null
-
     val username: String = args[args.lastIndex]
 
     val client: GitHubApiClient = KtorGitHubApiClient()
-    val events = client.listEventsForAuthenticatedUser(username, perPageQueryParameter ?: 30)
+    val events = client.listEventsForAuthenticatedUser(username)
 
     val formatter = GitHubEventFormatter()
     events.forEach { event ->
@@ -28,14 +26,23 @@ suspend fun main(args: Array<String>) {
     }
 }
 
+private fun handleInvalidInput(): Unit =
+    println(
+        """
+        "github-activity" requires 1 argument.
+        See 'github-activity --help'.
+        """.trimIndent()
+    )
+
 private fun handleHelpCommand(): Unit =
     println(
         """
-        Usage scheme: ./github-user-activity.sh <OPTIONS> [USERNAME]
-        
-        Options list:
-        
-        --per-page - Count of events. Default - 30
-        --page - Number of page (number, not index). First page - 1, second page - 2 etc.
-    """.trimIndent()
+
+        Usage: github-activity [OPTIONS] USERNAME
+
+        Fetch resent activity on GitHub of user
+
+        Options:
+            --help                              Print usage
+        """.trimIndent()
     )

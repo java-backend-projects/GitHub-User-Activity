@@ -1,6 +1,6 @@
 # GitHub User Activity CLI (https://roadmap.sh/projects/github-user-activity)
 
-This is a simple CLI (command-line interface) for fetching user's last activity on GitHub by his username.
+This is a simple CLI (command-line interface) for fetching user's recent activity on GitHub by his username.
 
 ## Installation
 
