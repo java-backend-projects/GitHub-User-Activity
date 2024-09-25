@@ -2,6 +2,7 @@ package ru.sug4chy
 
 import ru.sug4chy.apiclient.GitHubApiClient
 import ru.sug4chy.apiclient.implementation.KtorGitHubApiClient
+import ru.sug4chy.formatter.GitHubEventFormatter
 
 suspend fun main(args: Array<String>) {
     if (args.isEmpty()) {
@@ -21,10 +22,9 @@ suspend fun main(args: Array<String>) {
     val client: GitHubApiClient = KtorGitHubApiClient()
     val events = client.listEventsForAuthenticatedUser(username, perPageQueryParameter ?: 30)
 
-    println("Size: ${events.size}")
-
-    events.forEach {
-        println(it.type)
+    val formatter = GitHubEventFormatter()
+    events.forEach { event ->
+        println(event.format(formatter))
     }
 }
 

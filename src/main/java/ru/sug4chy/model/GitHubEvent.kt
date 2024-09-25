@@ -9,15 +9,12 @@ import java.time.LocalDateTime
 sealed class GitHubEvent<out TPayload : GitHubPayload>(
     val type: GitHubEventType,
     private val actor: GitHubActor,
-    private val repo: GitHubRepo,
+    val repo: GitHubRepo,
     val payload: TPayload,
 
     @SerializedName("created_at")
     val createdAt: LocalDateTime
 ) {
-
-    val repoFullName: String
-        get() = "${actor.displayLogin}/${repo.name}"
 
     class CommitCommentGitHubEvent(
         actor: GitHubActor,

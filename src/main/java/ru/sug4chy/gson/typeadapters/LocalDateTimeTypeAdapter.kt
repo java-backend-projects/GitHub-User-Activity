@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class LocalDateTimeTypeAdapter(
-    private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+    private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME
 ) : TypeAdapter<LocalDateTime>() {
 
     @Throws(IOException::class)
@@ -16,6 +16,7 @@ class LocalDateTimeTypeAdapter(
         out.value(value.format(dateTimeFormatter))
     }
 
+    @Throws(IOException::class)
     override fun read(`in`: JsonReader): LocalDateTime =
         LocalDateTime.parse(`in`.nextString(), dateTimeFormatter)
 }
