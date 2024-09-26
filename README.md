@@ -12,7 +12,6 @@ This is a simple CLI (command-line interface) for fetching user's recent activit
 2. **Unzip archive with .jar file, executable and setup-script:**
   ```bash
   unzip github-activity.zip
-  cd github-activity
   ```
 3. **Run setup-script:**
   ```bash
